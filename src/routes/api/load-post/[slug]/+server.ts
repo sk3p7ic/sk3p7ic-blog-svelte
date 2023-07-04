@@ -3,9 +3,13 @@ import { readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
+import remarkMath from 'remark-math';
+import remarkRehype from 'remark-rehype';
 import remarkStringify from 'remark-stringify';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkParseFrontmatter from 'remark-parse-frontmatter';
+import rehypeKatex from 'rehype-katex';
+import rehypeStringify from 'rehype-stringify';
 import type { FrontmatterType } from '$lib/types';
 
 const basePath = join('./src', 'content');
@@ -28,7 +32,10 @@ const parseMarkdownFile = (slug: string) => {
 		.use(remarkParse)
 		.use(remarkFrontmatter)
 		.use(remarkParseFrontmatter)
-		.use(remarkStringify)
+		.use(remarkMath)
+		.use(remarkRehype)
+		.use(rehypeKatex)
+		.use(rehypeStringify)
 		.parse(readFileSync(filename));
 	if (frontmatter) ast.children.shift();
 

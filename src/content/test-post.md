@@ -8,6 +8,14 @@ published: true
 
 This is a test post.
 
+This is the Theory of Relativity, $E = mc^2$, being used in a sentence.
+
+And here's some more math:
+
+$$
+x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
+$$
+
 ## This is a heading
 
 - This is a list item
@@ -26,7 +34,7 @@ This is a paragraph with `inline code` in it.
 
 ## Code
 
-```ts [foo.ts]
+```ts [foo.ts, //]
 const greet = (name: string) => {
 	console.log(`Hello, ${name}!`);
 };
