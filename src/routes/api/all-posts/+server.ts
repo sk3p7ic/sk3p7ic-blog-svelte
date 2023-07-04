@@ -6,6 +6,7 @@ import remarkParse from 'remark-parse';
 import remarkStringify from 'remark-stringify';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkParseFrontmatter from 'remark-parse-frontmatter';
+import type { FrontmatterType } from '$lib/types';
 
 const basePath = join('./src', 'content');
 
@@ -17,13 +18,12 @@ const parseMarkdownFile = (slug: string) => {
 	const filename = join(process.cwd(), basePath, slug + '.md');
 	const dateCreated = statSync(filename).birthtime;
 	const dateModified = statSync(filename).mtime;
-	// TODO: Add type for frontmatter
 	const frontmatter = unified()
 		.use(remarkParse)
 		.use(remarkFrontmatter)
 		.use(remarkParseFrontmatter)
 		.use(remarkStringify)
-		.processSync(readFileSync(filename)).data?.frontmatter;
+		.processSync(readFileSync(filename)).data?.frontmatter as FrontmatterType;
 	return { dateCreated, dateModified, frontmatter };
 };
 
