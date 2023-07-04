@@ -29,5 +29,13 @@
 		"vite": "^4.3.6",
 		"vitest": "^0.32.2"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"remark-frontmatter": "^4.0.1",
+		"remark-parse": "^10.0.2",
+		"remark-parse-frontmatter": "^1.0.3",
+		"remark-stringify": "^10.0.3",
+		"to-vfile": "^8.0.0",
+		"unified": "^10.1.2"
+	}
 }
