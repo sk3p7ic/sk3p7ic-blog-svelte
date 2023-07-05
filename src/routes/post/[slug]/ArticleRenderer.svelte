@@ -13,7 +13,6 @@
 
 	export let ast: AST;
 	const { children } = ast;
-	// TODO: Split at the code blocks and process them separately
 	const codeBlockIndices = children.reduce(
 		(acc, child, index) => {
 			if (child.type === 'code') {
@@ -25,12 +24,15 @@
 	);
 	let segments = [];
 	for (let i = 0; i < codeBlockIndices.length; i++) {
-		const start = codeBlockIndices[i];
+		// Get the start and end indices of the paragraph
+		const start = codeBlockIndices[i] + (i === 0 ? 0 : 1);
 		const end = codeBlockIndices[i + 1] || start + 1;
-		segments.push(children.slice(start, end));
-		if (!codeBlockIndices[i + 1]) {
-			segments.push(children.slice(end));
+		if (i > 0) {
+			// Get the code block and add it to the segments
+			const block = start - 1;
+			segments.push(children.slice(block, block + 1));
 		}
+		segments.push(children.slice(start, end));
 	}
 	const newASTs = segments.map((segment) => {
 		return { hasCode: segment[0].type === 'code', ast: { ...ast, children: segment as any } };
