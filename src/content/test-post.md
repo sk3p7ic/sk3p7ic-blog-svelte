@@ -4,8 +4,6 @@ description: 'This is a test post for the blog.'
 published: true
 ---
 
-# Test Post
-
 This is a test post.
 
 This is the Theory of Relativity, $E = mc^2$, being used in a sentence.

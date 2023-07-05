@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import ArticleKatexRenderer from './ArticleKatexRenderer.svelte';
+	import './article.postcss';
 
 	export let markup: string;
 	let html: HTMLDivElement | undefined = undefined;
