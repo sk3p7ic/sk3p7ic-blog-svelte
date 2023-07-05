@@ -39,3 +39,8 @@ const greet = (name: string) => {
 	console.log(`Hello, ${name}!`);
 };
 ```
+
+And here's another paragraph for testing.
+
+> This is a blockquote.
+> It has multiple lines.

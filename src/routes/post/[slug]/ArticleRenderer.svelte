@@ -2,8 +2,6 @@
 	import type { AST } from '$lib/types';
 	import { prependFilenameToCode } from '$lib/util';
 	import { CodeBlock } from '@skeletonlabs/skeleton';
-	import Katex from 'svelte-katex';
-	import ArticleListRenderer from './ArticleListRenderer.svelte';
 	import { unified } from 'unified';
 	import remarkMath from 'remark-math';
 	import rehypeKatex from 'rehype-katex';
@@ -11,57 +9,52 @@
 	import remarkHtml from 'remark-html';
 	import remarkRehype from 'remark-rehype/lib';
 	import rehypeRemark from 'rehype-remark/lib';
+	import ArticleMarkupRenderer from './ArticleMarkupRenderer.svelte';
 
 	export let ast: AST;
 	const { children } = ast;
 	// TODO: Split at the code blocks and process them separately
-	let modifiedChildren = children.filter((child) => child.type !== 'code');
-	ast.children = modifiedChildren;
-	const markup = unified()
-		.use(remarkMath)
-		.use(remarkRehype)
-		.use(rehypeKatex)
-		.use(rehypeStringify)
-		.use(rehypeRemark)
-		.use(remarkHtml, { sanitize: false })
-		.stringify(ast);
-	console.log(markup);
+	const codeBlockIndices = children.reduce(
+		(acc, child, index) => {
+			if (child.type === 'code') {
+				acc.push(index);
+			}
+			return acc;
+		},
+		[0] as number[]
+	);
+	let segments = [];
+	for (let i = 0; i < codeBlockIndices.length; i++) {
+		const start = codeBlockIndices[i];
+		const end = codeBlockIndices[i + 1] || start + 1;
+		segments.push(children.slice(start, end));
+		if (!codeBlockIndices[i + 1]) {
+			segments.push(children.slice(end));
+		}
+	}
+	const newASTs = segments.map((segment) => {
+		return { hasCode: segment[0].type === 'code', ast: { ...ast, children: segment as any } };
+	});
+	const markups = newASTs.map((newAST) => {
+		if (newAST.hasCode) {
+			return newAST.ast.children[0];
+		} else {
+			return unified()
+				.use(remarkMath)
+				.use(remarkRehype)
+				.use(rehypeKatex)
+				.use(rehypeStringify)
+				.use(rehypeRemark)
+				.use(remarkHtml, { sanitize: false })
+				.stringify(newAST.ast);
+		}
+	});
 </script>
 
-{#each children as child}
-	{#if child.type === 'heading'}
-		<a class={`h${child.depth} group`} href={`#${child.children[0].value}`}>
-			<span id={`${child.children[0].value}`}>{child.children[0].value}</span>
-			<span class="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">#</span>
-		</a>
-	{/if}
-
-	{#if child.type === 'paragraph'}
-		<p>
-			{#each child.children as pchild}
-				{#if pchild.type === 'text'}
-					{pchild.value}
-				{:else if pchild.type === 'inlineMath'}
-					<span class="math inline-math">
-						<Katex>{pchild.value}</Katex>
-					</span>
-				{/if}
-			{/each}
-		</p>
-	{/if}
-
-	{#if child.type === 'code'}
-		<CodeBlock
-			language={child.lang || ''}
-			code={prependFilenameToCode(child.value, child.meta || '')}
-		/>
-	{/if}
-
-	{#if child.type === 'list'}
-		<ul>
-			{#each child.children as listchild}
-				<ArticleListRenderer ast={listchild} />
-			{/each}
-		</ul>
+{#each markups as markup}
+	{#if typeof markup === 'string'}
+		<ArticleMarkupRenderer {markup} />
+	{:else}
+		<CodeBlock language={markup.lang} code={prependFilenameToCode(markup.value, markup.meta)} />
 	{/if}
 {/each}
