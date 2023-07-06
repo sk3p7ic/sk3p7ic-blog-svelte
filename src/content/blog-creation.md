@@ -1,6 +1,9 @@
 ---
 title: 'The Creation of this Blog'
 description: 'How I created this blog using SvelteKit.'
+categories:
+  - 'Web Development'
+  - 'Svelte'
 published: true
 ---
 

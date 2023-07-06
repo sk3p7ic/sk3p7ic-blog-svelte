@@ -24,11 +24,14 @@ const parseMarkdownFile = (slug: string) => {
 		.use(remarkParseFrontmatter)
 		.use(remarkStringify)
 		.processSync(readFileSync(filename)).data?.frontmatter as FrontmatterType;
-	return { dateCreated, dateModified, frontmatter };
+	return { dateCreated, dateModified, frontmatter, slug };
 };
 
 export const GET = (async () => {
 	const filenames = getContentFilenames();
-	const posts = filenames.map(stripFilenameExtension).map(parseMarkdownFile);
+	const posts = filenames
+		.map(stripFilenameExtension)
+		.map(parseMarkdownFile)
+		.sort((a, b) => b.dateCreated.getTime() - a.dateCreated.getTime());
 	return new Response(JSON.stringify(posts));
 }) satisfies RequestHandler;

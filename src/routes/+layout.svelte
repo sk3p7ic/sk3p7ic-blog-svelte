@@ -19,7 +19,7 @@
 
 <AppShell regionPage="relative" slotPageHeader="sticky top-0 z-10">
 	<svelte:fragment slot="pageHeader">
-		<AppBar>Sk3p7ic's Blog</AppBar>
+		<AppBar><h4 class="h4">Sk3p7ic's Blog</h4></AppBar>
 	</svelte:fragment>
 
 	<slot />

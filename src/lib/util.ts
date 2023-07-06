@@ -9,3 +9,12 @@ export const prependFilenameToCode = (code: string, meta: string): string => {
 	const [filename, commentChar] = extractCodeMetaFilename(meta);
 	return `${commentChar} ${filename}\n${code}`;
 };
+
+export const formatDateString = (date: string): string => {
+	const formatter = new Intl.DateTimeFormat('en', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric'
+	});
+	return formatter.format(new Date(date));
+};

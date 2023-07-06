@@ -4,12 +4,14 @@ export type FrontmatterType = {
 	title: string;
 	description: string;
 	published: boolean;
+	categories?: string[];
 };
 
 export type PostListingType = {
 	dateCreated: string;
 	dateModified: string;
 	frontmatter: FrontmatterType;
+	slug: string;
 };
 
 export type PostType = {
